@@ -14,7 +14,7 @@ app.use('/user', userRoute);
 DB.connect(process.env.MONGO_URL)
     .then(() => {
         app.listen(process.env.PORT, () => {
-            console.log(`DB connected successfully and backend is running on port ${process.env.PORT}`)
+            console.log(`Connection Successfull and running on port ${process.env.PORT}`)
         });
     })
     .catch((err)=>{
