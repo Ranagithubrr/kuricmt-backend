@@ -13,16 +13,32 @@ router.get('/', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-    const { maintitle, tagline, mainlogo, photos } = req.body;
+    const {
+        maintitle,
+        tagline,
+        mainlogo,
+        photos,
+        labassistant,
+        labonecomputer,
+        laboneseat,
+        labtwocomputer,
+        labtwoseat,
+        hlabcomputer,
+        hlabseat
+    } = req.body;
     const contentObj = {
         maintitle,
         tagline,
         mainlogo,
-        photos
+        photos,
+        labassistant,
+        labonecomputer,
+        laboneseat,
+        labtwocomputer,
+        labtwoseat,
+        hlabcomputer,
+        hlabseat
     };
-
-    console.log(contentObj);
-
     try {
         const updatedData = await Content.findOneAndUpdate(
             {},

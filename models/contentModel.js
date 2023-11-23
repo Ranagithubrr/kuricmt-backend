@@ -13,6 +13,27 @@ const contentSchema = new Schema({
     },
     photos:{
         type:Array,
+    },
+    labassistant:{
+        type:String,
+    },   
+    labonecomputer:{
+        type:String,
+    },     
+    laboneseat:{
+        type:String,
+    },     
+    labtwocomputer:{
+        type:String,
+    },     
+    labtwoseat:{
+        type:String,
+    },     
+    hlabcomputer:{
+        type:String,
+    },     
+    hlabseat:{
+        type:String,
     },     
 });
 

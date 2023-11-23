@@ -9,9 +9,11 @@ app.use(bodyParser.json());
 
 userRoute = require('./routes/user');
 contentRoute = require('./routes/content');
+captaintRoute = require('./routes/captains');
 
 app.use('/user', userRoute);
 app.use('/content', contentRoute);
+app.use('/captains', captaintRoute);
 // starting the server after DB connected
 DB.connect(process.env.MONGO_URL)
     .then(() => {
