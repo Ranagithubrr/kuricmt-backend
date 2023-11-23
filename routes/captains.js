@@ -60,11 +60,6 @@ router.post('/delete/:id', async (req, res) => {
 router.post('/update/:id', async (req, res) => {
     const captainId = req.params.id;
     const { name, roll, semester, phone, email } = req.body;
-
-    // Check if any required data is missing
-    if (name === undefined || roll === undefined || semester === undefined || phone === undefined || email === undefined) {
-        return res.status(400).json({ msg: "Please provide all data" });
-    }
     const existingCaptain = await Captains.findById(captainId);
 
     if (!existingCaptain) {
