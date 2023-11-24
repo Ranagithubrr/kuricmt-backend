@@ -3,20 +3,26 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const { verifyToken } = require('../middleware/jwtmiddleware');
 
 router.get('/', (req, res) => {
     res.send("from router")
 });
 // token
-const createToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' })
+const createToken = (user) => {
+    return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '1h' })
 }
 // log in user
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
+    const userData = {
+        name: user.name,
+        type: user.type,
+        email: user.email,
+    }
     if (user) {
-        const token = createToken()
+        const token = createToken(userData)
         const verifypass = await bcrypt.compare(password, user.password);
         if (verifypass) {
             res.status(200).json({ msg: 'log in success', user, token })
@@ -42,13 +48,13 @@ router.post('/register', async (req, res) => {
     const userObj = {
         email,
         password: hash,
-        isactivate:false,
+        isactivate: false,
         name,
         type,
         title,
         phone,
         address,
-        website,        
+        website,
     }
 
     const Data = await User.create({
@@ -60,7 +66,13 @@ router.post('/register', async (req, res) => {
         res.status(400).json({ msg: "Failed to create user" })
     }
 });
-
+// a protected route
+// router.get('/protected', verifyToken, (req, res) => {
+//     if (req.user.user.type === "admin") {
+//         return res.status(200).json({ msg: "access granted" })
+//     }
+//     res.status(400).json({ msg: "access rejected" })
+// });
 // router.post('/regiser-admin', async (req, res) => {
 //     const email = "admin@gmail.com";
 //     const password = "pass123";
