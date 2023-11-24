@@ -3,6 +3,7 @@ const router = express.Router();
 const Content = require('../models/contentModel');
 const { verifyToken } = require('../middleware/jwtmiddleware');
 
+// get all contents
 router.get('/', async (req, res) => {
     try {
         const allData = await Content.find({});
@@ -13,8 +14,9 @@ router.get('/', async (req, res) => {
     }
 });
 
+// update contents only by admin
 router.put('/', verifyToken, async (req, res) => {
-    if (req.user.user.type === "admin") {
+    if (req.user && req.user.user && req.user.user.type === 'admin') {
         const {
             maintitle,
             tagline,
@@ -57,8 +59,8 @@ router.put('/', verifyToken, async (req, res) => {
             console.error('Error updating data:', error);
             res.status(500).send('Internal Server Error');
         }
-    }else{
-        return res.status(400).json({msg:"access denied"})
+    } else {
+        return res.status(400).json({ msg: "access denied" })
     }
 });
 

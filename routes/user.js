@@ -3,14 +3,13 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
-const { verifyToken } = require('../middleware/jwtmiddleware');
 
 router.get('/', (req, res) => {
     res.send("from router")
 });
 // token
 const createToken = (user) => {
-    return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '1h' })
+    return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '3d' })
 }
 // log in user
 router.post('/login', async (req, res) => {
