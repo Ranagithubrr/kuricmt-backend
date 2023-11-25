@@ -2,18 +2,25 @@ const express = require('express')
 const app = express();
 require('dotenv').config();
 const DB = require('mongoose');
+
 const bodyParser = require('body-parser');
 
 
+
 app.use(bodyParser.json());
+app.use('/uploads', express.static('uploads'));
 
 userRoute = require('./routes/user');
 contentRoute = require('./routes/content');
 captaintRoute = require('./routes/captains');
+noticeRoute = require('./routes/notice');
+
+
 
 app.use('/user', userRoute);
 app.use('/content', contentRoute);
 app.use('/captains', captaintRoute);
+app.use('/notice', noticeRoute);
 // starting the server after DB connected
 DB.connect(process.env.MONGO_URL)
     .then(() => {
