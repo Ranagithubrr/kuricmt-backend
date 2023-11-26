@@ -3,13 +3,14 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const { verifyToken } = require('../middleware/jwtmiddleware');
 
 router.get('/', async (req, res) => {
     const AllUser = await User.find({});
-    if(AllUser){
-        return res.status(200).send({msg:"Got Users", AllUser})
-    }else{
-        return res.status(400).send({msg:"Failed to retrive Users"})
+    if (AllUser) {
+        return res.status(200).send({ msg: "Got Users", AllUser })
+    } else {
+        return res.status(400).send({ msg: "Failed to retrive Users" })
     }
 
 
@@ -73,38 +74,46 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/update-profile', async (req, res) => {
-    try {
-      const {               
+router.post('/update-profile', verifyToken, async (req, res) => {
+    const {
+        email,
         name,
         title,
         phone,
         address,
-        website,        
-      } = req.body;     
-      const userId = req.body.userId;
-  
-      // Check if the user exists
-      const existingUser = await User.findById(userId);
-  
-      if (!existingUser) {
-        return res.status(404).json({ msg: 'User not found' });
-      }
-  
-      // Update user data    
-      existingUser.name = name || existingUser.name;
-      existingUser.title = title || existingUser.title;
-      existingUser.phone = phone || existingUser.phone;
-      existingUser.address = address || existingUser.address;
-      existingUser.website = website || existingUser.website;
-  
-      // Save the updated user object
-      const updatedUser = await existingUser.save();
-  
-      res.status(200).json({ msg: 'Profile updated successfully', updatedUser });
-    } catch (error) {
-      console.error('Error updating profile:', error.message);
-      res.status(500).json({ msg: 'Internal server error' });
+        website,
+    } = req.body;
+    const userId = req.body.userId;
+    if(!userId || !email){
+        return res.status(400).json({msg:"User id or email not provided"});
     }
-  });
+    if (req.user && req.user.user && req.user.user.email === email) {
+        try {
+            // Check if the user exists
+            const existingUser = await User.findById(userId);
+
+            if (!existingUser) {
+                return res.status(404).json({ msg: 'User not found' });
+            }
+
+            // Update user data    
+            existingUser.name = name || existingUser.name;
+            existingUser.title = title || existingUser.title;
+            existingUser.phone = phone || existingUser.phone;
+            existingUser.address = address || existingUser.address;
+            existingUser.website = website || existingUser.website;
+
+            // Save the updated user object
+            const updatedUser = await existingUser.save();
+
+           return res.status(200).json({ msg: 'Profile updated successfully', updatedUser });
+        } catch (error) {
+            console.error('Error updating profile:', error.message);
+            res.status(500).json({ msg: 'Internal server error' });
+        }
+    }else{
+        res.status(400).json({msg:"access declined"})
+    }
+    
+});
 module.exports = router;
