@@ -5,6 +5,7 @@ const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../middleware/jwtmiddleware');
 
+// get all teachers
 router.get('/', async (req, res) => {
     const AllUser = await User.find({});
     if (AllUser) {
@@ -12,8 +13,6 @@ router.get('/', async (req, res) => {
     } else {
         return res.status(400).send({ msg: "Failed to retrive Users" })
     }
-
-
 });
 // token
 const createToken = (user) => {
@@ -40,6 +39,7 @@ router.post('/login', async (req, res) => {
         res.status(404).json({ msg: 'not found' })
     }
 });
+// register user
 router.post('/register', async (req, res) => {
     const { email, password, name, title, phone, address, website, type } = req.body;
     if (!email | !password) {
@@ -73,7 +73,7 @@ router.post('/register', async (req, res) => {
         res.status(400).json({ msg: "Failed to create user" })
     }
 });
-
+// update user profile
 router.post('/update-profile', verifyToken, async (req, res) => {
     const {
         email,
@@ -117,6 +117,7 @@ router.post('/update-profile', verifyToken, async (req, res) => {
 
 });
 
+// activate teaceher 
 router.post('/activate-teacher', verifyToken, async (req, res) => {
     if (req.user && req.user.user && req.user.user.type === "admin") {
         const { teacherId } = req.body;
@@ -139,7 +140,8 @@ router.post('/activate-teacher', verifyToken, async (req, res) => {
     } else {
         res.status(400).json({ msg: "access declined" })
     }
-})
+});
+// delete teacher
 router.post('/delete-teacher', verifyToken, async (req, res) => {
     if (req.user && req.user.user && req.user.user.type === "admin") {
         const { teacherId } = req.body;
@@ -166,5 +168,5 @@ router.post('/delete-teacher', verifyToken, async (req, res) => {
     } else {
         res.status(400).json({ msg: "access declined" })
     }
-})
+});
 module.exports = router;
