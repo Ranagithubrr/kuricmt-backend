@@ -84,8 +84,8 @@ router.post('/update-profile', verifyToken, async (req, res) => {
         website,
     } = req.body;
     const userId = req.body.userId;
-    if(!userId || !email){
-        return res.status(400).json({msg:"User id or email not provided"});
+    if (!userId || !email) {
+        return res.status(400).json({ msg: "User id or email not provided" });
     }
     if (req.user && req.user.user && req.user.user.email === email) {
         try {
@@ -106,14 +106,65 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             // Save the updated user object
             const updatedUser = await existingUser.save();
 
-           return res.status(200).json({ msg: 'Profile updated successfully', updatedUser });
+            return res.status(200).json({ msg: 'Profile updated successfully', updatedUser });
         } catch (error) {
             console.error('Error updating profile:', error.message);
             res.status(500).json({ msg: 'Internal server error' });
         }
-    }else{
-        res.status(400).json({msg:"access declined"})
+    } else {
+        res.status(400).json({ msg: "access declined" })
     }
-    
+
 });
+
+router.post('/activate-teacher', verifyToken, async (req, res) => {
+    if (req.user && req.user.user && req.user.user.type === "admin") {
+        const { teacherId } = req.body;
+        if (!teacherId) {
+            return res.status(400).json({ msg: "Please provide teacher id" })
+        }
+        try {
+            const updatedTeacher = await User.findByIdAndUpdate(
+                teacherId,
+                { $set: { isactivate: true } },
+                { new: true }
+            );
+            if (!updatedTeacher) {
+                return res.status(404).json({ msg: 'Teacher not found' });
+            }
+            res.status(200).json({ msg: 'Teacher status updated to active', updatedTeacher });
+        } catch (err) {
+            return res.status(404).json({ msg: 'Request Failed' });
+        }
+    } else {
+        res.status(400).json({ msg: "access declined" })
+    }
+})
+router.post('/delete-teacher', verifyToken, async (req, res) => {
+    if (req.user && req.user.user && req.user.user.type === "admin") {
+        const { teacherId } = req.body;
+        if (!teacherId) {
+            return res.status(400).json({ msg: "Please provide teacher id" })
+        }
+        try {
+            const teacherToDelete = await User.findById(teacherId);
+            if (!teacherToDelete) {
+                return res.status(404).json({ msg: 'Teacher not found' });
+            }
+            if (teacherToDelete.type === 'admin') {
+                return res.status(403).json({ msg: 'Forbidden: Admin cannot be deleted' });
+            }
+            const deletedTeacher = await User.findByIdAndDelete(teacherId);
+            if (!deletedTeacher) {
+                return res.status(404).json({ msg: 'Teacher not found' });
+            }
+            res.status(200).json({ msg: 'Teacher deleted ', deletedTeacher });
+        } catch (err) {
+            console.log(err);
+            return res.status(404).json({ msg: 'Request Failed' });
+        }
+    } else {
+        res.status(400).json({ msg: "access declined" })
+    }
+})
 module.exports = router;
