@@ -55,7 +55,7 @@ router.get('/', async (req,res)=>{
     res.status(400).json({msg:"Cant get"})
 });
 
-
+// get the single notice
 
 router.get('/:id', async (req, res) => {
     try {
