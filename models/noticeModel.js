@@ -10,7 +10,7 @@ const noticeSchema = new Schema({
         type:String,
         required:true,
     },
-    filename:{
+    noticeurl:{
         type:String,
         required:true,
     },
