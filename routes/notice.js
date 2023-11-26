@@ -35,10 +35,6 @@ router.get('/', async (req,res)=>{
 
 // get the single notice
 
-// router.get('/:id', async (req, res) => {
-   
-//   }
-
 
 
 module.exports = router;
