@@ -26,8 +26,7 @@ router.post('/login', async (req, res) => {
     }
     try {
         const user = await User.findOne({ email });
-        const userData = {
-            name: user.name || "",
+        const userData = {            
             type: user.type,
             email: user.email,
         }
