@@ -40,7 +40,7 @@ router.post('/login', async (req, res) => {
                 res.status(404).json({ msg: 'invalid credentials' })
             }
         } else {
-            res.status(404).json({ msg: 'not found' })
+           return res.status(404).json({ msg: 'not found' })
         }
     }
     catch (err) {
