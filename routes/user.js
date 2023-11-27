@@ -7,8 +7,8 @@ const { verifyToken } = require('../middleware/jwtmiddleware');
 
 // get all teachers
 router.get('/', async (req, res) => {
-    const AllUser = await User.find({});
-    if (AllUser) {
+    const AllUser = await User.find({},'-password');
+    if (AllUser) {        
         return res.status(200).send({ msg: "Got Users", AllUser })
     } else {
         return res.status(400).send({ msg: "Failed to retrive Users" })
