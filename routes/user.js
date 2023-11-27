@@ -7,8 +7,8 @@ const { verifyToken } = require('../middleware/jwtmiddleware');
 
 // get all teachers
 router.get('/', async (req, res) => {
-    const AllUser = await User.find({},'-password');
-    if (AllUser) {        
+    const AllUser = await User.find({}, '-password');
+    if (AllUser) {
         return res.status(200).send({ msg: "Got Users", AllUser })
     } else {
         return res.status(400).send({ msg: "Failed to retrive Users" })
@@ -21,23 +21,31 @@ const createToken = (user) => {
 // log in user
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
-    const userData = {
-        name: user.name,
-        type: user.type,
-        email: user.email,
+    if (!email || !password) {
+        return res.status(400).json({ msg: "Please provide all creadentials" })
     }
-    if (user) {
-        const token = createToken(userData)
-        const verifypass = await bcrypt.compare(password, user.password);
-        if (verifypass) {
-            user.password = undefined;
-            res.status(200).json({ msg: 'log in success', user, token })
-        } else {
-            res.status(404).json({ msg: 'invalid credentials' })
+    try {
+        const user = await User.findOne({ email });
+        const userData = {
+            name: user.name || "",
+            type: user.type,
+            email: user.email,
         }
-    } else {
-        res.status(404).json({ msg: 'not found' })
+        if (user) {
+            const token = createToken(userData)
+            const verifypass = await bcrypt.compare(password, user.password);
+            if (verifypass) {
+                user.password = undefined;
+                res.status(200).json({ msg: 'log in success', user, token })
+            } else {
+                res.status(404).json({ msg: 'invalid credentials' })
+            }
+        } else {
+            res.status(404).json({ msg: 'not found' })
+        }
+    }
+    catch (err) {
+        return res.status(400).json({ msg: "Server error" })
     }
 });
 // register user
