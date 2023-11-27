@@ -31,6 +31,7 @@ router.post('/login', async (req, res) => {
         const token = createToken(userData)
         const verifypass = await bcrypt.compare(password, user.password);
         if (verifypass) {
+            user.password = undefined;
             res.status(200).json({ msg: 'log in success', user, token })
         } else {
             res.status(404).json({ msg: 'invalid credentials' })
