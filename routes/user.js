@@ -35,9 +35,9 @@ router.post('/login', async (req, res) => {
             const verifypass = await bcrypt.compare(password, user.password);
             if (verifypass) {
                 user.password = undefined;
-                res.status(200).json({ msg: 'log in success', user, token })
+               return res.status(200).json({ msg: 'log in success', user, token })
             } else {
-                res.status(404).json({ msg: 'invalid credentials' })
+               return res.status(404).json({ msg: 'invalid credentials' })
             }
         } else {
            return res.status(404).json({ msg: 'not found' })
@@ -76,9 +76,9 @@ router.post('/register', async (req, res) => {
         ...userObj
     });
     if (Data) {
-        res.status(200).json({ msg: "User created", Data })
+       return res.status(200).json({ msg: "User created", Data })
     } else {
-        res.status(400).json({ msg: "Failed to create user" })
+       return res.status(400).json({ msg: "Failed to create user" })
     }
 });
 // update user profile
@@ -117,10 +117,10 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             return res.status(200).json({ msg: 'Profile updated successfully', updatedUser });
         } catch (error) {
             console.error('Error updating profile:', error.message);
-            res.status(500).json({ msg: 'Internal server error' });
+           return res.status(500).json({ msg: 'Internal server error' });
         }
     } else {
-        res.status(400).json({ msg: "access declined" })
+       return res.status(400).json({ msg: "access declined" })
     }
 
 });
@@ -146,7 +146,7 @@ router.post('/activate-teacher', verifyToken, async (req, res) => {
             return res.status(404).json({ msg: 'Request Failed' });
         }
     } else {
-        res.status(400).json({ msg: "access declined" })
+       return res.status(400).json({ msg: "access declined" })
     }
 });
 // delete teacher

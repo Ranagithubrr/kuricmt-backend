@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     }
 });
 // add captain
-router.post('/', async (req, res) => {
+router.post('/', verifyToken , async (req, res) => {
     const { name, roll, semester, phone, email } = req.body;
     if (name === undefined || roll === undefined || semester === undefined || phone === undefined || email === undefined) {
         return res.status(400).json({ msg: "Please provide all data" });
