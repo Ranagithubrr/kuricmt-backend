@@ -92,7 +92,8 @@ router.post('/update-profile', verifyToken, async (req, res) => {
         website,
     } = req.body;
     const userId = req.body.userId;
-    if (!userId || !email) {
+    const token = req.headers.authorization && req.headers.authorization.split(" ")[1];    
+    if (!userId && !email) {
         return res.status(400).json({ msg: "User id or email not provided" });
     }
     if (req.user && req.user.user && req.user.user.email === email) {
@@ -114,7 +115,7 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             // Save the updated user object
             const updatedUser = await existingUser.save();
 
-            return res.status(200).json({ msg: 'Profile updated successfully', updatedUser });
+            return res.status(200).json({ msg: 'Profile updated successfully', updatedUser, token });
         } catch (error) {
             console.error('Error updating profile:', error.message);
            return res.status(500).json({ msg: 'Internal server error' });
