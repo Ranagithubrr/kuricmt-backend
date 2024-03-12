@@ -26,26 +26,31 @@ router.post('/login', async (req, res) => {
     }
     try {
         const user = await User.findOne({ email });
-        const userData = {            
-            type: user.type,
-            email: user.email,
-        }
         if (user) {
-            const token = createToken(userData)
+            const userData = {
+                type: user.type,
+                email: user.email,
+            };
+    
+            const token = createToken(userData);
             const verifypass = await bcrypt.compare(password, user.password);
-            if (verifypass) {
-                user.password = undefined;
-               return res.status(200).json({ msg: 'log in success', user, token })
+            if (verifypass) {                
+                if (user.isactivate === true) {
+                    user.password = undefined;
+                    return res.status(200).json({ msg: 'log in success', user, token });
+                } else {
+                    return res.status(406).json({ msg: 'Account is not activated' });
+                }
             } else {
-               return res.status(404).json({ msg: 'invalid credentials' })
+                return res.status(404).json({ msg: 'Invalid credentials' });
             }
         } else {
-           return res.status(404).json({ msg: 'not found' })
+            return res.status(404).json({ msg: 'User not found' });
         }
+    } catch (err) {
+        return res.status(400).json({ msg: "Server error" });
     }
-    catch (err) {
-        return res.status(400).json({ msg: "Server error" })
-    }
+    
 });
 // register user
 router.post('/register', async (req, res) => {
@@ -76,9 +81,9 @@ router.post('/register', async (req, res) => {
         ...userObj
     });
     if (Data) {
-       return res.status(200).json({ msg: "User created", Data })
+        return res.status(200).json({ msg: "User created", Data })
     } else {
-       return res.status(400).json({ msg: "Failed to create user" })
+        return res.status(400).json({ msg: "Failed to create user" })
     }
 });
 // update user profile
@@ -92,7 +97,7 @@ router.post('/update-profile', verifyToken, async (req, res) => {
         website,
     } = req.body;
     const userId = req.body.userId;
-    const token = req.headers.authorization && req.headers.authorization.split(" ")[1];    
+    const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
     if (!userId && !email) {
         return res.status(400).json({ msg: "User id or email not provided" });
     }
@@ -118,10 +123,10 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             return res.status(200).json({ msg: 'Profile updated successfully', updatedUser, token });
         } catch (error) {
             console.error('Error updating profile:', error.message);
-           return res.status(500).json({ msg: 'Internal server error' });
+            return res.status(500).json({ msg: 'Internal server error' });
         }
     } else {
-       return res.status(400).json({ msg: "access declined" })
+        return res.status(400).json({ msg: "access declined" })
     }
 
 });
@@ -147,7 +152,7 @@ router.post('/activate-teacher', verifyToken, async (req, res) => {
             return res.status(404).json({ msg: 'Request Failed' });
         }
     } else {
-       return res.status(400).json({ msg: "access declined" })
+        return res.status(400).json({ msg: "access declined" })
     }
 });
 // delete teacher
