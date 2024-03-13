@@ -86,6 +86,19 @@ router.post('/register', async (req, res) => {
         return res.status(400).json({ msg: "Failed to create user" })
     }
 });
+// register admin
+router.post('/register-admin', async (req, res) => {
+    const email = "admin@gmail.com";
+    const password = "pass123";
+    const sault = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password, sault)
+    const Data = await User.create({ email, password: hash, type:"admin", isactivate:true });
+    if (Data) {
+        res.status(200).json({ msg: "User created", Data })
+    } else {
+        res.status(400).json({ msg: "Failed to create user" })
+    }
+});
 // update user profile
 router.post('/update-profile', verifyToken, async (req, res) => {
     const {
@@ -119,7 +132,10 @@ router.post('/update-profile', verifyToken, async (req, res) => {
 
             // Save the updated user object
             const updatedUser = await existingUser.save();
-
+            console.log("Before deleting password:", updatedUser);
+            // removing the password before sending 
+            updatedUser.password = undefined;
+            console.log("After deleting password:", updatedUser);
             return res.status(200).json({ msg: 'Profile updated successfully', updatedUser, token });
         } catch (error) {
             console.error('Error updating profile:', error.message);
