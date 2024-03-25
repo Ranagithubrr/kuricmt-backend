@@ -14,6 +14,15 @@ router.get('/', async (req, res) => {
         return res.status(400).send({ msg: "Failed to retrive Users" })
     }
 });
+// get inactivate teachers
+router.get('/inactive-teacher', async (req,res)=>{
+    const AllUser = await User.find({ isactivate: false }, '-password');
+    if (AllUser) {
+        return res.status(200).send({ msg: "Got Users", AllUser })
+    } else {
+        return res.status(400).send({ msg: "Failed to retrive Users" })
+    }
+})
 // token
 const createToken = (user) => {
     return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '3d' })
@@ -56,8 +65,9 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
     const { email, password, name, title, phone, address, website, type } = req.body;
     if (!email | !password) {
-        res.status(400).send("Provide Data");
+        res.status(400).send("Provide Data: email, password, name, title, phone, address, website, type");
         res.end();
+        return;
     }
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -131,11 +141,9 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             existingUser.website = website || existingUser.website;
 
             // Save the updated user object
-            const updatedUser = await existingUser.save();
-            console.log("Before deleting password:", updatedUser);
+            const updatedUser = await existingUser.save();            
             // removing the password before sending 
-            updatedUser.password = undefined;
-            console.log("After deleting password:", updatedUser);
+            updatedUser.password = undefined;           
             return res.status(200).json({ msg: 'Profile updated successfully', updatedUser, token });
         } catch (error) {
             console.error('Error updating profile:', error.message);
@@ -163,6 +171,7 @@ router.post('/activate-teacher', verifyToken, async (req, res) => {
             if (!updatedTeacher) {
                 return res.status(404).json({ msg: 'Teacher not found' });
             }
+            updatedTeacher.password = undefined;
             res.status(200).json({ msg: 'Teacher status updated to active', updatedTeacher });
         } catch (err) {
             return res.status(404).json({ msg: 'Request Failed' });

@@ -5,16 +5,18 @@ const { verifyToken } = require('../middleware/jwtmiddleware');
 
 // create application
 router.post('/', async (req, res) => {
-    const { title, name, roll, subject, body } = req.body;
-    const appliObj = {
-        title,
+    const { name, roll, subject, body, email, semester, shift } = req.body;
+    const appliObj = {        
         name,
         roll,
         subject,
-        body
+        email,
+        body,
+        semester,
+        shift
     }
-    if (!title || !name || !roll || !subject) {
-        return res.status(400).json({ msg: "Plese provide all data" })
+    if (!name || !roll || !subject || !email || !semester || !shift || !body) {
+        return res.status(400).json({ msg: "Plese provide all data: name,roll,subject,email,body" })
     }
     try{
         const Data = await Applications.create({
@@ -56,7 +58,7 @@ router.post('/resolve-application', verifyToken, async (req, res) => {
 });
 // get all application
 router.get('/', async (req,res)=>{
-    const ApplicationsData = await Applications.find({});
+    const ApplicationsData = await Applications.find({}).sort({ createdAt: -1 });
     if(Applications){
         return res.status(200).json({msg:"Applications", ApplicationsData})
     }
