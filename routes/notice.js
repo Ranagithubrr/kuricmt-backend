@@ -31,9 +31,9 @@ router.post('/', verifyToken, async (req, res) => {
 
 // get all notices 
 router.get('/', async (req, res) => {
-  const AllNotices = await Notices.find({});
-  if (AllNotices) {
-    return res.status(200).json({ msg: "Got Notices", AllNotices })
+  const allNotices = await Notices.find({}).sort({ _id: -1 });
+  if (allNotices) {
+    return res.status(200).json({ msg: "Got Notices", allNotices })
   }
   res.status(400).json({ msg: "Cant get" })
 });

@@ -118,6 +118,7 @@ router.post('/update-profile', verifyToken, async (req, res) => {
         phone,
         address,
         website,
+        image,
     } = req.body;
     const userId = req.body.userId;
     const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
@@ -139,6 +140,7 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             existingUser.phone = phone || existingUser.phone;
             existingUser.address = address || existingUser.address;
             existingUser.website = website || existingUser.website;
+            existingUser.image = image || existingUser.image || "";
 
             // Save the updated user object
             const updatedUser = await existingUser.save();            
@@ -152,7 +154,6 @@ router.post('/update-profile', verifyToken, async (req, res) => {
     } else {
         return res.status(400).json({ msg: "access declined" })
     }
-
 });
 
 // activate teaceher 
