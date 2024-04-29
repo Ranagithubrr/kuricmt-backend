@@ -11,6 +11,9 @@ const contentSchema = new Schema({
     mainlogo:{
         type:String,      
     },
+    coverphoto:{
+        type:String,      
+    },
     photos:{
         type:Array,
     },

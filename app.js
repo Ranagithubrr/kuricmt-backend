@@ -16,6 +16,7 @@ contentRoute = require('./routes/content');
 captaintRoute = require('./routes/captains');
 noticeRoute = require('./routes/notice');
 applicationRoute = require('./routes/application');
+quoteRoute = require('./routes/quotes')
 
 
 
@@ -24,6 +25,7 @@ app.use('/content', contentRoute);
 app.use('/captains', captaintRoute);
 app.use('/notice', noticeRoute);
 app.use('/application', applicationRoute);
+app.use('/quotes', quoteRoute);
 // starting the server after DB connected
 DB.connect(process.env.MONGO_URL)
     .then(() => {

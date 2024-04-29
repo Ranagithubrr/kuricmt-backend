@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router();
 const Content = require('../models/contentModel');
+const Notices = require('../models/noticeModel');
+const User = require('../models/userModel');
 const { verifyToken } = require('../middleware/jwtmiddleware');
 
 // get all contents
@@ -21,6 +23,7 @@ router.put('/', verifyToken, async (req, res) => {
             maintitle,
             tagline,
             mainlogo,
+            coverphoto,
             photos,
             labassistant,
             labonecomputer,
@@ -34,6 +37,7 @@ router.put('/', verifyToken, async (req, res) => {
             maintitle,
             tagline,
             mainlogo,
+            coverphoto,
             photos,
             labassistant,
             labonecomputer,
@@ -61,6 +65,20 @@ router.put('/', verifyToken, async (req, res) => {
         }
     } else {
         return res.status(400).json({ msg: "access denied" })
+    }
+});
+
+// get all contents
+router.get('/website-data', async (req, res) => {
+    try {
+        const contents = await Content.find({});
+        const notices = await Notices.find({});
+        const teachers = await User.find({}, '-password');
+        res.status(200).json({ contents, notices, teachers });
+        res.status(200).json();
+    } catch (error) {
+        console.error('Error retrieving data:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
