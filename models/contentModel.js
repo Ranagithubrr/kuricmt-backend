@@ -38,6 +38,13 @@ const contentSchema = new Schema({
     hlabseat:{
         type:String,
     },     
+    announcementstatus:{
+        type:Boolean,
+        default:false
+    },
+    announcement:{
+        type:String,    
+    }
 });
 
 module.exports = mongoose.model("Content", contentSchema)

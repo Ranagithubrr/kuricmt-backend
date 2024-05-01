@@ -1,5 +1,3 @@
-// app.js
-
 const express = require('express');
 const app = express();
 require('dotenv').config();
@@ -20,6 +18,22 @@ app.use(cors({
 }));
 app.use(bodyParser.json());
 app.use('/uploads', express.static('uploads'));
+
+userRoute = require('./routes/user');
+contentRoute = require('./routes/content');
+captaintRoute = require('./routes/captains');
+noticeRoute = require('./routes/notice');
+applicationRoute = require('./routes/application');
+quoteRoute = require('./routes/quotes')
+
+
+
+app.use('/user', userRoute);
+app.use('/content', contentRoute);
+app.use('/captains', captaintRoute);
+app.use('/notice', noticeRoute);
+app.use('/application', applicationRoute);
+app.use('/quotes', quoteRoute);
 
 const fetchOldMessages = async () => {
     try {
