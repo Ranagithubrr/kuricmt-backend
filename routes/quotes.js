@@ -4,7 +4,7 @@ const Quote = require('../models/quoteModel');
 
 // Post a notice
 router.post('/', async (req, res) => {
-    const { name, department, session, message } = req.body;
+    const { name, department, session, message, status } = req.body;
     if (!name  || !session || !message) {
       return res.status(400).json({ msg: "Fill all the fields" })
     }
@@ -12,7 +12,8 @@ router.post('/', async (req, res) => {
       name,
       department,
       session,
-      message
+      message,
+      status
     }
     const Data = await Quote.create({
       ...QuoteObj
@@ -32,6 +33,42 @@ router.get('/', async (req, res) => {
     return res.status(200).json({ msg: "Got Quotes", allQuotes })
   }
   res.status(400).json({ msg: "Cant get quote" })
+});
+
+// delete quote
+router.delete('/:id', async (req, res) => {            
+        const quoteId = req.params.id;
+        try {
+            const deletedQuote = await Quote.findOneAndDelete({ _id: quoteId });
+            if (deletedQuote) {
+                res.status(200).json({ msg: "quote deleted", deletedQuote });
+            } else {
+                res.status(404).json({ msg: "quote not found" });
+            }
+        } catch (error) {
+            console.error('Error deleting quote:', error);
+            res.status(500).json({ msg: "Server error" });
+        }
+      
+});
+// update status
+router.post('/update-status/:id', async (req, res) => {            
+        const quoteId = req.params.id;        
+        try {
+            const quote = await Quote.findOne({ _id: quoteId });
+            if (quote) {                
+                quote.status = !quote.status;               
+                await quote.save();
+                res.status(200).json({ msg: "Quote status updated" }); 
+            } else {
+                console.error('Quote not found');  
+                res.status(500).json({ msg: "Quote not found" });              
+            }
+        } catch (error) {
+            console.error('Error deleting quote:', error);
+            res.status(500).json({ msg: "Server error" });
+        }      
+      
 });
 
 
