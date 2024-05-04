@@ -129,7 +129,7 @@ router.post('/status', async (req, res) => {
 router.get('/website-data', async (req, res) => {
     try {
         const contents = await Content.find({});
-        const notices = await Notices.find({});
+        const notices = await Notices.find({}).sort({ _id: -1 });
         const teachers = await User.find({}, '-password');
         const Quotes = await Quote.find({});
         res.status(200).json({ contents, notices, teachers, Quotes });
