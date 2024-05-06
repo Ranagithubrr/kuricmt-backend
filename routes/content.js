@@ -132,8 +132,7 @@ router.get('/website-data', async (req, res) => {
         const notices = await Notices.find({}).sort({ _id: -1 });
         const teachers = await User.find({}, '-password');
         const Quotes = await Quote.find({});
-        res.status(200).json({ contents, notices, teachers, Quotes });
-        res.status(200).json();
+        res.status(200).json({ contents, notices, teachers, Quotes });        
     } catch (error) {
         console.error('Error retrieving data:', error);
         res.status(500).send('Internal Server Error');
