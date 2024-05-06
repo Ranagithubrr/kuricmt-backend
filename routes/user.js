@@ -63,7 +63,8 @@ router.post('/login', async (req, res) => {
 });
 // register user
 router.post('/register', async (req, res) => {
-    const { email, password, name, title, phone, address, website, type } = req.body;
+    const { email, password, name, title, phone, address, website } = req.body;
+    const type = "teacher";
     if (!email | !password) {
         res.status(400).send("Provide Data: email, password, name, title, phone, address, website, type");
         res.end();
