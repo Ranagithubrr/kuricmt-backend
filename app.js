@@ -35,6 +35,11 @@ app.use('/notice', noticeRoute);
 app.use('/application', applicationRoute);
 app.use('/quotes', quoteRoute);
 
+app.get('/', (req,res)=>{
+    console.log('backend is running');
+    res.status(200).json({msg:"server running"})
+})
+
 const fetchOldMessages = async () => {
     try {
         // Fetch old messages from the database
