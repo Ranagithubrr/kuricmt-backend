@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
-const Captains = require('../models/captainsModel');
-const { verifyToken } = require('../middleware/jwtmiddleware');
+const Captains = require('../api/models/captainsModel');
+const { verifyToken } = require('../api/middleware/jwtmiddleware');
 
 // get all captains
 router.get('/', async (req, res) => {

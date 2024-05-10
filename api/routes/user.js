@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const User = require('../models/userModel');
+const User = require('../api/models/userModel');
 const jwt = require('jsonwebtoken');
-const { verifyToken } = require('../middleware/jwtmiddleware');
+const { verifyToken } = require('../api/middleware/jwtmiddleware');
 
 // get all teachers
 router.get('/', async (req, res) => {
