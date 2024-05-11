@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const Quote = require('../api/models/quoteModel');
+const Quote = require('../models/quoteModel');
 
 // Post a notice
 router.post('/', async (req, res) => {

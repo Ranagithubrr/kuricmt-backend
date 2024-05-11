@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
-const Applications = require('../api/models/applicationModel');
-const { verifyToken } = require('../api/middleware/jwtmiddleware');
+const Applications = require('../models/applicationModel');
+const { verifyToken } = require('../middleware/jwtmiddleware');
 
 // create application
 router.post('/', async (req, res) => {

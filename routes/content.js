@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router();
-const Content = require('../api/models/contentModel');
-const Notices = require('../api/models/noticeModel');
-const User = require('../api/models/userModel');
-const Quote = require('../api/models/quoteModel');
-const { verifyToken } = require('../api/middleware/jwtmiddleware');
+const Content = require('../models/contentModel');
+const Notices = require('../models/noticeModel');
+const User = require('../models/userModel');
+const Quote = require('../models/quoteModel');
+const { verifyToken } = require('../middleware/jwtmiddleware');
 
 // get all contents
 router.get('/', async (req, res) => {
