@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
-const { verifyToken } = require('../middleware/jwtmiddleware');
-const Notices = require('../models/noticeModel');
+const { verifyToken } = require('../api/middleware/jwtmiddleware');
+const Notices = require('../api/models/noticeModel');
 
 // Post a notice
 router.post('/', verifyToken, async (req, res) => {
