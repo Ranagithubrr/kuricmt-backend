@@ -120,6 +120,9 @@ router.post('/update-profile', verifyToken, async (req, res) => {
         address,
         website,
         image,
+        facebook,
+        instagram,
+        twitter
     } = req.body;
     const userId = req.body.userId;
     const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
@@ -141,6 +144,9 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             existingUser.phone = phone || existingUser.phone;
             existingUser.address = address || existingUser.address;
             existingUser.website = website || existingUser.website;
+            existingUser.facebook = facebook || existingUser.facebook;
+            existingUser.instagram = instagram || existingUser.instagram;
+            existingUser.twitter = twitter || existingUser.twitter;
             existingUser.image = image || existingUser.image || "";
 
             // Save the updated user object

@@ -33,6 +33,15 @@ const userSchema = new Schema({
     website: {
         type: String,
     },
+    facebook: {
+        type: String,
+    },
+    instagram: {
+        type: String,
+    },
+    twitter: {
+        type: String,
+    },
     image: {
         type: String,
     },
