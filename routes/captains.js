@@ -14,12 +14,12 @@ router.get('/', async (req, res) => {
 });
 // add captain
 router.post('/', verifyToken , async (req, res) => {
-    const { name, roll, semester, phone, email } = req.body;
-    if (name === undefined || roll === undefined || semester === undefined || phone === undefined || email === undefined) {
+    const { name, roll, semester, phone, email, shift } = req.body;
+    if (name === undefined || roll === undefined || semester === undefined || phone === undefined || email === undefined || shift === undefined) {
         return res.status(400).json({ msg: "Please provide all data" });
     }
     const capobj = {
-        name, roll, semester, phone, email
+        name, roll, semester, phone, email, shift
     }
     const existingCaptain = await Captains.findOne({ roll });
     if (existingCaptain) {
@@ -67,7 +67,7 @@ router.post('/delete/:id', verifyToken, async (req, res) => {
 router.post('/update/:id', verifyToken, async (req, res) => {
     if (req.user && req.user.user && req.user.user.type === 'admin') {
         const captainId = req.params.id;
-        const { name, roll, semester, phone, email } = req.body;
+        const { name, roll, semester, phone, email,shift } = req.body;
         const existingCaptain = await Captains.findById(captainId);
 
         if (!existingCaptain) {
@@ -79,7 +79,8 @@ router.post('/update/:id', verifyToken, async (req, res) => {
             roll: roll || existingCaptain.roll,
             semester: semester || existingCaptain.semester,
             phone: phone || existingCaptain.phone,
-            email: email || existingCaptain.email
+            email: email || existingCaptain.email,
+            shift: shift || existingCaptain.shift,
         };
 
         try {

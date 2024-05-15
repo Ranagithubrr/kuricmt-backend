@@ -22,6 +22,10 @@ const captainSchema = new Schema({
         type:String,
         required:true,
     },
+    shift:{
+        type:String,
+        required:true
+    }
 });
 
 module.exports = mongoose.model("Captain", captainSchema)
