@@ -4,6 +4,7 @@ const Content = require('../models/contentModel');
 const Notices = require('../models/noticeModel');
 const User = require('../models/userModel');
 const Quote = require('../models/quoteModel');
+const Captain = require('../models/captainsModel');
 const { verifyToken } = require('../middleware/jwtmiddleware');
 
 // get all contents
@@ -132,7 +133,8 @@ router.get('/website-data', async (req, res) => {
         const notices = await Notices.find({}).sort({ _id: -1 });
         const teachers = await User.find({}, '-password');
         const Quotes = await Quote.find({});
-        res.status(200).json({ contents, notices, teachers, Quotes });        
+        const Captains = await Captain.find({});
+        res.status(200).json({ contents, notices, teachers, Quotes,Captains });        
     } catch (error) {
         console.error('Error retrieving data:', error);
         res.status(500).send('Internal Server Error');
