@@ -14,6 +14,21 @@ router.get('/', async (req, res) => {
         return res.status(400).send({ msg: "Failed to retrive Users" })
     }
 });
+// get single teacher data
+router.get('/:id', async (req, res) => {
+    try {
+        const teacherId = req.params.id;
+        const teacher = await User.findById(teacherId, '-password');
+        if (teacher) {
+            return res.status(200).send({ msg: "Got Teacher", teacher });
+        } else {
+            return res.status(404).send({ msg: "Teacher not found" });
+        }
+    } catch (error) {
+        console.error("Error retrieving teacher:", error);
+        return res.status(500).send({ msg: "Internal Server Error" });
+    }
+});
 // get inactivate teachers
 router.get('/inactive-teacher', async (req,res)=>{
     const AllUser = await User.find({ isactivate: false }, '-password');
