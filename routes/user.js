@@ -14,6 +14,19 @@ router.get('/', async (req, res) => {
         return res.status(400).send({ msg: "Failed to retrive Users" })
     }
 });
+// get inactivate teachers
+router.get('/inactive-teacher', async (req, res) => {
+    try {
+        const allUsers = await User.find({ isactivate: false }, '-password');
+        if (allUsers.length > 0) {
+            return res.status(200).send({ msg: "Got Users", allUsers });
+        } else {
+            return res.status(404).send({ msg: "No inactive users found" });
+        }
+    } catch (error) {
+        return res.status(500).send({ msg: "Failed to retrieve users", error: error.message });
+    }
+})
 // get single teacher data
 router.get('/:id', async (req, res) => {
     try {
@@ -29,15 +42,7 @@ router.get('/:id', async (req, res) => {
         return res.status(500).send({ msg: "Internal Server Error" });
     }
 });
-// get inactivate teachers
-router.get('/inactive-teacher', async (req,res)=>{
-    const AllUser = await User.find({ isactivate: false }, '-password');
-    if (AllUser) {
-        return res.status(200).send({ msg: "Got Users", AllUser })
-    } else {
-        return res.status(400).send({ msg: "Failed to retrive Users" })
-    }
-})
+
 // token
 const createToken = (user) => {
     return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '3d' })
@@ -55,10 +60,10 @@ router.post('/login', async (req, res) => {
                 type: user.type,
                 email: user.email,
             };
-    
+
             const token = createToken(userData);
             const verifypass = await bcrypt.compare(password, user.password);
-            if (verifypass) {                
+            if (verifypass) {
                 if (user.isactivate === true) {
                     user.password = undefined;
                     return res.status(200).json({ msg: 'log in success', user, token });
@@ -74,7 +79,7 @@ router.post('/login', async (req, res) => {
     } catch (err) {
         return res.status(400).json({ msg: "Server error" });
     }
-    
+
 });
 // register user
 router.post('/register', async (req, res) => {
@@ -118,7 +123,7 @@ router.post('/register-admin', async (req, res) => {
     const password = "pass123";
     const sault = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, sault)
-    const Data = await User.create({ email, password: hash, type:"admin", isactivate:true });
+    const Data = await User.create({ email, password: hash, type: "admin", isactivate: true });
     if (Data) {
         res.status(200).json({ msg: "User created", Data })
     } else {
@@ -165,9 +170,9 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             existingUser.image = image || existingUser.image || "";
 
             // Save the updated user object
-            const updatedUser = await existingUser.save();            
+            const updatedUser = await existingUser.save();
             // removing the password before sending 
-            updatedUser.password = undefined;           
+            updatedUser.password = undefined;
             return res.status(200).json({ msg: 'Profile updated successfully', updatedUser, token });
         } catch (error) {
             console.error('Error updating profile:', error.message);
