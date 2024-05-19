@@ -131,7 +131,7 @@ router.get('/website-data', async (req, res) => {
     try {
         const contents = await Content.find({});
         const notices = await Notices.find({}).sort({ _id: -1 });
-        const teachers = await User.find({}, '-password');
+        const teachers = await User.find({isactivate:true}, '-password');
         const Quotes = await Quote.find({});
         const Captains = await Captain.find({});
         res.status(200).json({ contents, notices, teachers, Quotes,Captains });        
