@@ -9,11 +9,7 @@ const messageSchema = new Schema({
     name:{
         type:String,
         required:true
-    },
-    avatar:{
-        type:String,
-        default:""
-    },
+    },   
     body:{
         type:String,
         required:true,
