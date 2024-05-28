@@ -163,10 +163,10 @@ router.post('/update-profile', verifyToken, async (req, res) => {
             existingUser.title = title || existingUser.title;
             existingUser.phone = phone || existingUser.phone;
             existingUser.address = address || existingUser.address;
-            existingUser.website = website || existingUser.website;
-            existingUser.facebook = facebook || existingUser.facebook;
-            existingUser.instagram = instagram || existingUser.instagram;
-            existingUser.twitter = twitter || existingUser.twitter;
+            existingUser.website = website;
+            existingUser.facebook = facebook;
+            existingUser.instagram = instagram;
+            existingUser.twitter = twitter;
             existingUser.image = image || existingUser.image || "";
 
             // Save the updated user object
