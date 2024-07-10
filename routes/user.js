@@ -185,7 +185,7 @@ router.post('/verify-otp', (req, res) => {
     if (timedout) {
         timedout = false;
         delete otpObject[email];
-        res.status(400).json({ msg: 'verification timed out' });
+        res.status(504).json({ msg: 'verification timed out' });
         return;
     }
     if (otpObject.hasOwnProperty(email) && otp === otpObject[email]) {
