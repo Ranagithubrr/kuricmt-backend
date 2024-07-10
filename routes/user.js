@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const { verifyToken } = require('../middleware/jwtmiddleware');
 
 // get all teachers
@@ -117,6 +118,81 @@ router.post('/register', async (req, res) => {
         return res.status(400).json({ msg: "Failed to create user" })
     }
 });
+const otpObject = {};
+let timedout = false;
+// get otp
+router.post('/verify-email', async (req, res) => {
+    timedout = false;
+    const { name, email } = req.body;
+    if (!email || !name) {
+        res.status(400).json({ msg: "provide name and email" });
+        return;
+    }
+    const random = Math.floor(100000 + Math.random() * 900000);
+    otpObject[email] = random; // Store OTP for the user's email in the object    
+
+    const timeOutOtp = () => {
+        setTimeout(() => {
+            timedout = true;
+        }, 30000);
+    }
+
+
+    const transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'mr6430119@gmail.com',
+            pass: 'geqmcizrclrkshue'
+        }
+    });
+
+    var mailOptions = {
+        from: 'no-reply-rr@gmail.com',
+        to: email,
+        subject: 'Verify Email at DOC',
+        html: `<div class="container" style="padding: 20px;">
+            <p class="header" style="font-size: 18px; margin-bottom: 10px;">Hi ${name},</p>
+            <p style="margin-bottom: 15px;">Thank you for creating an account with DOC.</p>            
+            <p style="margin-bottom: 15px;">Your verification code is:</p>            
+            <p class="code" style="font-weight: bold; font-size: 22px;">${random}</p>           
+            <p style="margin-bottom: 15px;">If you did not attempt an registration, please ignore this mail</p>            
+        </div>`
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+            res.status(400).json({ msg: "faild to sent otp" })
+        } else {
+            console.log('Email sent: ' + info.response);
+            timeOutOtp();
+            res.status(200).json({ msg: "otp sent successfully" });
+
+        }
+    });
+    res.end();
+});
+// verify otp
+router.post('/verify-otp', (req, res) => {
+    const { otp, email } = req.body;
+    if (!otp || !email) {
+        res.status(400).json({ msg: 'provide otp and email' });
+        return;
+    }
+    if (timedout) {
+        timedout = false;
+        delete otpObject[email];
+        res.status(400).json({ msg: 'verification timed out' });
+        return;
+    }
+    if (otpObject.hasOwnProperty(email) && otp === otpObject[email]) {
+        delete otpObject[email];
+        timedout = false;
+        res.status(200).json({ msg: "verification success" });
+        return;
+    }
+    res.status(400).json({ msg: 'otp didnt matched' });
+    return;
+})
 // register admin
 router.post('/register-admin', async (req, res) => {
     const email = "admin@gmail.com";
