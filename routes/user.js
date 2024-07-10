@@ -138,7 +138,7 @@ router.post('/verify-email', async (req, res) => {
     const timeOutOtp = () => {
         setTimeout(() => {
             timedout = true;
-        }, 30000);
+        }, 120000);
     }
 
 
