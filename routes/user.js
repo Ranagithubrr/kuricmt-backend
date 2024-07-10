@@ -128,6 +128,10 @@ router.post('/verify-email', async (req, res) => {
         res.status(400).json({ msg: "provide name and email" });
         return;
     }
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        return res.status(409).json({ msg: "User with this email already exists" });
+    }
     const random = Math.floor(100000 + Math.random() * 900000);
     otpObject[email] = random; // Store OTP for the user's email in the object    
 
