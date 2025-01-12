@@ -46,7 +46,7 @@ router.get('/:id', async (req, res) => {
 
 // token
 const createToken = (user) => {
-    return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '30s' })
+    return jwt.sign({ user }, process.env.JWT_SECRET, { expiresIn: '30d' })
 }
 // log in user
 router.post('/login', async (req, res) => {
